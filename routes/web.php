@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\customer\car_service_customer_controller;
+use App\Http\Controllers\CustomAuthController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,4 +19,12 @@ use Illuminate\Support\Facades\Route;
 //     return view('welcome');
 // });
 
-Route::get('/home',[car_service_customer_controller::class,'index']);
+Route::get('/', function () {
+    return view('home');
+});
+
+Route::get('/login',[CustomAuthController::class,'login'])->name('login');
+Route::get('registration',[CustomAuthController::class,'registration']);
+
+Route::post('register-user',[CustomAuthController::class,'registerUser'])->name('register-user');
+Route::post('login-user',[CustomAuthController::class,'loginUser'])->name('login-user');
