@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\customer\car_service_customer_controller;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +14,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+
+Route::get('/home',[car_service_customer_controller::class,'index']);
