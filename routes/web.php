@@ -32,3 +32,10 @@ Route::get('dashboard_customer',[car_service_customer_controller::class,'dashboa
 
 Route::get('edit_profile',[car_service_customer_controller::class,'edit_profile'])->middleware('customer')->name('edit_profile');
 Route::post('edit_profile',[car_service_customer_controller::class,'edit_profile_submit'])->name('edit_profile_submit');
+
+Route::get('my_posts',[car_service_customer_controller::class,'my_posts'])->middleware('customer')->name('my_posts');
+Route::get('my_posts_edit/{id}',[car_service_customer_controller::class,'my_posts_edit'])->middleware('customer')->name('my_posts_edit');
+Route::post('my_posts_edit',[car_service_customer_controller::class,'my_posts_edit_submit'])->name('my_posts_edit_submit');
+Route::get('my_posts_delete/{id}',[car_service_customer_controller::class,'my_posts_delete'])->middleware('customer')->name('my_posts_delete');
+Route::get('post_for_a_car',[car_service_customer_controller::class,'post_for_a_car'])->middleware('customer')->name('post_for_a_car');
+Route::post('post_for_a_car',[car_service_customer_controller::class,'post_for_a_car_submit'])->name('post_for_a_car_submit');
