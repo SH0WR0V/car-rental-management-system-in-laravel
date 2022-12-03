@@ -29,3 +29,6 @@ Route::get('registration',[CustomAuthController::class,'registration']);
 Route::post('register-user',[CustomAuthController::class,'registerUser'])->name('register-user');
 Route::post('login-user',[CustomAuthController::class,'loginUser'])->name('login-user');
 Route::get('dashboard_customer',[car_service_customer_controller::class,'dashboard_customer'])->middleware('customer')->name('customer dashboard');
+
+Route::get('edit_profile',[car_service_customer_controller::class,'edit_profile'])->middleware('customer')->name('edit_profile');
+Route::post('edit_profile',[car_service_customer_controller::class,'edit_profile_submit'])->name('edit_profile_submit');
