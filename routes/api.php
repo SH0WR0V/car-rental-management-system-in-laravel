@@ -1,7 +1,9 @@
 <?php
 
+use App\Http\Controllers\customer\api_car_service_customer_controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\LoginAPIController;
 
 /*
 |--------------------------------------------------------------------------
@@ -17,3 +19,8 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::post('/login',[LoginAPIController::class,'login']); 
+Route::post('/registration',[LoginAPIController::class,'registration']); 
+Route::put('/logout',[LoginAPIController::class,'logout']); 
+Route::get('/view_car_list',[api_car_service_customer_controller::class,'view_car_list'])->middleware('APICustomer'); 
