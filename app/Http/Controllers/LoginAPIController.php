@@ -15,10 +15,13 @@ class LoginAPIController extends Controller
 
         $user = User::where('email',$req->email)->where('password',$req->password)->first();
 
+
         if($user){
+            // $customer=session()->put('Cid', $user->id);
             $api_token = Str::random(64);
             $token = new Token();
             $token->userid = $user->id;
+            $token->type = $user->type;
             $token->token = $api_token;
             $token->created_at = new DateTime();
             $token->save();
