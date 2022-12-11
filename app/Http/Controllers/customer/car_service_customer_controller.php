@@ -10,6 +10,7 @@ use App\Models\Notice;
 use App\Models\RentPost;
 use App\Models\CarService;
 use DateTime;
+use Illuminate\Support\Str;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Hash;
 
@@ -211,7 +212,7 @@ class car_service_customer_controller extends Controller
         $approv->rent_price = $Clist->rent_price;
         $approv->status = 0;
         $approv->save();
-        
+
         $c_user=Approval::where('customer_id','=',$req->session()->get('Cid'))->get();
         return view('Customer_Pages.checking_approval')->with('c_user',$c_user);
         

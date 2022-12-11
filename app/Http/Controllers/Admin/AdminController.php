@@ -6,34 +6,50 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\BlockUser;
+use App\Models\CarService;
 use App\Http\Controllers\Admin\Session;
+use App\Mail\AdminApprovelMail;
+use App\Models\AdminApproval;
+use App\Models\Approval;
+use App\Models\RentHistory;
+use App\Models\RentMessage;
+use Illuminate\Support\Facades\Notification;
+use App\Notifications\ApprovalNotification;
+use Illuminate\Mail\SentMessage;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Mail;
 
 class AdminController extends Controller
 {
-    public function dashboard_admin(Request $req)
+    public function dashboard_admin(Request $rep)
     {
-        $n= $req->session()->get('email');
-
-        $s_user=User ::all()->where('email','=',$n);
-        return view('Admin_Pages.dashboard_admin')->with('s_user',$s_user);
+        $id = $rep->id;
+        $s_user=User ::all()->where('id','=',$id)->first();
+        if($s_user)
+        {
+            return $s_user;
+        }
+        else{
+            return"not found";
+        }
     }
 
     public function custorans_list()
     {
-        $customers= User::all()->where('type','=','Customer');
+        $customers= User::where('type','=','Customer')->where('block_status','=',0)->get();
 
-        return view('Admin_Pages.customers_list')->with('customers',$customers);
+        return $customers;
     }
     public function renter_list()
     {
-        $renter= User::all()->where('type','=','Renter');
+        $renter= User::where('type','=','Renter')->where('block_status','=',0)->get();
 
-        return view('Admin_Pages.renter_list')->with('renters',$renter);
+        return $renter;
     }
     public function block_users_list()
     {
         $BUser=BlockUser::all();
-        return view('Admin_Pages.block_users_list')->with('BUser',$BUser);
+        return $BUser;
     }
     public function add_car_by_admin()
     {
@@ -41,19 +57,27 @@ class AdminController extends Controller
     }
     public function cars_list()
     {
-        return view('Admin_Pages.car_lists');
+        $carlist=CarService::all();
+
+        return $carlist;
     }
     public function admin_approval()
     {
-        return view('Admin_Pages.admin_approvals');
+        $renterApproval=AdminApproval::all();
+        return $renterApproval;
     }
     public function rent_history()
     {
-        return view('Admin_Pages.rent_historys');
+        $history=RentHistory::all();
+        return $history;
     }
-    public function admin_message_list()
+    public function admin_message_list(Request $request)
     {
-        return view('Admin_Pages.admin_messages_list');
+        //$message=RentMessage::DISTINCT('sender')->where("receiver",'=',$request->session()->get('UserID'))->get();
+        $message=RentMessage::distinct()->select('sender')->where('receiver', '=', $request->session()->get('UserID'))->groupBy('sender')->get();
+        //$message2=RentMessage::distinct()->select('receiver')->where('sender', '=', $request->session()->get('UserID'))->groupBy('receiver')->get();
+        // $message->DISTINCT();
+        return $message;
     }
     public function admin_notice()
     {
@@ -73,12 +97,32 @@ class AdminController extends Controller
     }
     public function user_details(Request $request)
     {
-        $s_user=User ::all()->where('id','=',decrypt($request->id));
-        return view('Admin_Pages.single_user_details')->with('s_user',$s_user);
+        $s_user=User ::all()->where('id','=',$request->id);
+        return $s_user;
     }
     public function blockuser_details(Request $request)
     {
-        $s_user=BlockUser ::all()->where('id','=',decrypt($request->id));
-        return view('Admin_Pages.single_user_details')->with('s_user',$s_user);
+        $s_user=BlockUser ::all()->where('id','=',$request->id);
+        return $s_user;
+    }
+
+
+
+    public function notification(Request $request)
+    {
+        $user = User::where('id','=',$request->id)->pluck('email');
+        if($user)
+        {
+            // $user->notify(new ApprovalNotification());
+            $my="mdhidoyhassan@gmail.com";
+            $message="Hi there";
+            // Notification::send($user, new ApprovalNotification());
+            // Mail::to($my)->send(new AdminApprovelMail($message));
+            return $user;
+        }
+        else
+        {
+            return "no";
+        }
     }
 }

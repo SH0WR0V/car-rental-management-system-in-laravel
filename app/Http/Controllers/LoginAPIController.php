@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\BlockUser;
 use App\Models\User;
 use App\Models\Token;
 use Illuminate\Support\Str;
@@ -13,11 +14,15 @@ class LoginAPIController extends Controller
 
     public function login(Request $req){
 
+        $b_user = BlockUser::where('email','=',$req->email)->first();
+        if($b_user){
+            return 'Block';
+        }
+        else{
+
         $user = User::where('email',$req->email)->where('password',$req->password)->first();
 
-
         if($user){
-            // $customer=session()->put('Cid', $user->id);
             $api_token = Str::random(64);
             $token = new Token();
             $token->userid = $user->id;
@@ -27,7 +32,10 @@ class LoginAPIController extends Controller
             $token->save();
             return $token;
         }
-        return "No user found";
+        else{
+            return "No user found";
+        }
+    }
 
     }
 

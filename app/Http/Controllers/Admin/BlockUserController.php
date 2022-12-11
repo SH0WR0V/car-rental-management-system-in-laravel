@@ -7,13 +7,14 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\BlockUser;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Pagination\Paginator;
 
 class BlockUserController extends Controller
 {
 
     public function add_block(Request $req)
     {
-        $s_user=User :: find (decrypt($req->id) );
+        $s_user=User :: find ($req->id);
         $s_user->block_status = 1;
         $s_user->save();
 
@@ -35,9 +36,9 @@ class BlockUserController extends Controller
         $res = $user->save();
 
         if($res){
-            return back()->with('success','You have Block successfully');
+            return "You have Block successfully";
         }else{
-            return back()->with('fail', 'Something Went Wrong');
+            return "Something Went Wrong";
         }
 
 
@@ -45,16 +46,38 @@ class BlockUserController extends Controller
     }
     public function delete_block(Request $req)
     {
-        $b_user=BlockUser :: find (decrypt($req->id) );
+        $b_user=BlockUser :: find ($req->id) ;
+        if($b_user)
+        {
         $status=$b_user->user_id;
         $user=User::find($status);
         $user->block_status=0;
         $user->save();
         $b_user->delete();
         if($b_user){
-            return back()->with('success','You have Unblock successfully');
+            return 'You have Unblock successfully';
         }else{
-            return back()->with('fail', 'Something Went Wrong');
+            return 'Something Went Wrong';
+        }
+    }
+    else{
+        return 'not found';
+    }
+    }
+    public function block_users_search(Request $req)
+    {
+        $req->validate([
+            'search'=>'required',
+        ]);
+        $BUser=BlockUser::where('email','like','%'.$req->search)->orWhere('username','like','%'.$req->search)->get();
+        if($BUser)
+        {
+            return $BUser +'Search Found';
+        }
+        else
+        {
+            $User=BlockUser::all();
+            return $User+'Search Found';
         }
     }
 
